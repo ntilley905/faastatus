@@ -126,12 +126,7 @@ class FAAStatusSensor(Entity):
                                         self._attr["Closure Reason"] = delay["Reason"]
 
                     self._state = data.get("DelayCount")
-#                    self._attr = {
-#                        "alerts": alerts,
-#                        "integration": "weatheralerts",
-#                        "state": self.zone_state,
-#                        "zone": self.airport,
-#                    }
+
         except Exception:  # pylint: disable=broad-except
             self.exception = sys.exc_info()[0].__name__
             connected = False
