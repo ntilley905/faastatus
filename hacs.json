@@ -1,0 +1,6 @@
+{
+  "name": "FAA Airport Status",
+  "domains": "sensor",
+  "country": "US",
+  "iot_class": "Cloud Polling"
+}
