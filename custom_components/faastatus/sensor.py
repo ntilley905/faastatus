@@ -63,18 +63,18 @@ class FAAStatusSensor(Entity):
         self.connected = True
         self.exception = None
         self._attr = {
-            "Departure Delay": False,
-            "Departure Delay Reason": None,
-            "Arrival Delay": False,
-            "Arrival Delay Reason": None,
-            "Ground Delay": False,
-            "Ground Delay Reason": None,
-            "Ground Stop": False,
-            "Ground Stop Reason": None,
-            "End Time": None,
+            "Departure_Delay": False,
+            "Departure_Delay_Reason": None,
+            "Arrival_Delay": False,
+            "Arrival_Delay_Reason": None,
+            "Ground_Delay": False,
+            "Ground_Delay_Reason": None,
+            "Ground_Stop": False,
+            "Ground_Stop_Reason": None,
+            "End_Time": None,
             "Closed": False,
-            "Closure End": None,
-            "Closure Reason": None
+            "Closure_End": None,
+            "Closure_Reason": None
         }
 
     async def async_update(self):
@@ -90,40 +90,40 @@ class FAAStatusSensor(Entity):
                     data = await response.json()
 
                     if data.get("DelayCount") is not 0:
-                        self._attr["Arrival Delay"] = False
-                        self._attr["Arrival Delay Reason"] = None
-                        self._attr["Departure Delay"] = False
-                        self._attr["Departure Delay Reason"] = None
-                        self._attr["Ground Delay"] = False
-                        self._attr["Ground Delay Reason"] = None
-                        self._attr["Ground Stop"] = False
-                        self._attr["Ground Stop Reason"] = None
+                        self._attr["Arrival_Delay"] = False
+                        self._attr["Arrival_Delay_Reason"] = None
+                        self._attr["Departure_Delay"] = False
+                        self._attr["Departure_Delay_Reason"] = None
+                        self._attr["Ground_Delay"] = False
+                        self._attr["Ground_Delay_Reason"] = None
+                        self._attr["Ground_Stop"] = False
+                        self._attr["Ground_Stop_Reason"] = None
                         self._attr["Closed"] = False
-                        self._attr["Closure Reason"] = None
-                        self._attr["End Time"] = None
-                        self._attr["Closure End"] = None
+                        self._attr["Closure_Reason"] = None
+                        self._attr["End_Time"] = None
+                        self._attr["Closure_End"] = None
                         for delay in data["Status"]:
                             try:
                                 if delay["Type"] == "Arrival":
-                                    self._attr["Arrival Delay"] = True
-                                    self._attr["Arrival Delay Reason"] = delay["Reason"]
+                                    self._attr["Arrival_Delay"] = True
+                                    self._attr["Arrival_Delay_Reason"] = delay["Reason"]
                                 elif delay["Type"] == "Departure":
-                                    self._attr["Departure Delay"] = True
-                                    self._attr["Departure Delay Reason"] = delay["Reason"]
+                                    self._attr["Departure_Delay"] = True
+                                    self._attr["Departure_Delay_Reason"] = delay["Reason"]
                                 elif delay["Type"] == "Ground Delay":
-                                    self._attr["Ground Delay"] = True
-                                    self._attr["Ground Delay Reason"] = delay["Reason"]
+                                    self._attr["Ground_Delay"] = True
+                                    self._attr["Ground_Delay_Reason"] = delay["Reason"]
                             except KeyError:
                                 try:
                                     if delay["EndTime"]:
-                                        self._attr["Ground Stop"] = True
-                                        self._attr["End Time"] = delay["EndTime"]
-                                        self._attr["Ground Stop Reason"] = delay["Reason"]
+                                        self._attr["Ground_Stop"] = True
+                                        self._attr["End_Time"] = delay["EndTime"]
+                                        self._attr["Ground_Stop_Reason"] = delay["Reason"]
                                 except KeyError:
                                     if delay["ClosureEnd"]:
                                         self._attr["Closed"] = True
-                                        self._attr["Closure End"] = delay["ClosureEnd"]
-                                        self._attr["Closure Reason"] = delay["Reason"]
+                                        self._attr["Closure_End"] = delay["ClosureEnd"]
+                                        self._attr["Closure_Reason"] = delay["Reason"]
 
                     self._state = data.get("DelayCount")
 
