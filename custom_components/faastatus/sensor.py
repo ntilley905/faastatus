@@ -110,7 +110,7 @@ class FAAStatusSensor(Entity):
                                 elif delay["Type"] == "Departure":
                                     self._attr["departure_delay"] = True
                                     self._attr["departure_delay_reason"] = delay["Reason"]
-                                elif delay["Type"] == "ground Delay":
+                                elif delay["Type"] == "Ground Delay":
                                     self._attr["ground_delay"] = True
                                     self._attr["ground_delay_reason"] = delay["Reason"]
                             except KeyError:
