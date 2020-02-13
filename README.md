@@ -1,4 +1,5 @@
 # custom_component to get info from alerts.weather.gov
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
 A platform which allows you to get information from the FAA National Airspace System API.
 
