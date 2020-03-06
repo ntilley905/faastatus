@@ -1,0 +1,102 @@
+# This is an example file to give some ideas as to how you can use the integration.
+
+# Configuration code
+# This section should be in your main configuration.yaml file or in their respective packages
+sensor:
+  platform: faastatus
+  id: ATL
+
+# To set up multiple sensors, simply add extra sensors such as below
+sensor:
+  - platform: faastatus
+    id: JFK
+  - platform: faastatus
+    id: LGA
+
+binary_sensor:
+  platform: template
+  sensors:
+    atl_departure_delay:
+      friendly_name: "ATL Departure Delay"
+      value_template: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'departure_delay') }}"
+      attribute_templates:
+        reason: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'departure_delay_reason') }}"
+    atl_arrival_delay:
+      friendly_name: "ATL Arrival Delay"
+      value_template: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'arrival_delay') }}"
+      attribute_templates:
+        reason: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'arrival_delay_reason') }}"
+    atl_ground_delay:
+      friendly_name: "ATL GDP"
+      value_template: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'ground_delay') }}"
+      attribute_templates:
+        reason: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'ground_delay_reason') }}"
+    atl_ground_stop:
+      friendly_name: "ATL GS"
+      value_template: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'ground_stop') }}"
+      attribute_templates:
+        reason: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'ground_stop_reason') }}"
+        end: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'end_time') }}"
+    atl_closed:
+      friendly_name: "ATL Closed"
+      value_template: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'closed') }}"
+      attribute_templates:
+        reason: "{{state_attr('sensor.hartsfield_jackson_atlanta_intl', 'closure_reason') }}"
+        end: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'closure_end') }}"
+
+# Automation Example
+automation:
+  trigger:
+  platform: state
+  entity_id:
+    - binary_sensor.atl_departure_delay
+    - binary_sensor.atl_arrival_delay
+    - binary_sensor.atl_ground_delay
+    - binary_sensor.atl_ground_stop
+    - binary_sensor.atl_closed
+    to: 'on'
+  action:
+    service: notify.notify
+    data_template:
+      title: "{{ trigger.to_state.name }}"
+      message: >
+        Reason: {{ trigger.to_state.attributes.reason }}
+        {% if trigger.to_state.attributes.end %}
+        End: {{ trigger.to_state.attributes.end }}
+        {% endif %}
+
+# Lovelace Card Example
+- type: entities
+  title: ATL Status
+  show_header_toggle: false
+  entities:
+    - sensor.hartsfield_jackson_atlanta_intl
+    - type: custom:template-entity-row
+      condition: "{{ is_state_attr('sensor.hartsfield_jackson_atlanta_intl', 'closed', true) }}"
+      name: "Closure Reason:"
+      icon: mdi:airplane-off
+      state: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'closure_reason') }}"
+      secondary: "Closure End: {{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'closure_end') }}"
+    - type: custom:template-entity-row
+      condition: "{{ is_state_attr('sensor.hartsfield_jackson_atlanta_intl', 'ground_stop', true) }}"
+      name: "Ground Stop Reason:"
+      icon: mdi:stop-circle-outline
+      state: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'ground_stop_reason') }}"
+      secondary: "End Time: {{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'end_time') }}"
+    - type: custom:template-entity-row
+      condition: "{{ is_state_attr('sensor.hartsfield_jackson_atlanta_intl', 'ground_delay', true) }}"
+      name: "Ground Delay Reason:"
+      icon: mdi:timer-off
+      state: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'ground_delay_reason') }}"
+      secondary: "Last Updated {{ as_timestamp(states.sensor.hartsfield_jackson_atlanta_intl.last_changed) | timestamp_custom('%D %-I:%M %p') }}"
+    - type: custom:template-entity-row
+      condition: "{{ is_state_attr('sensor.hartsfield_jackson_atlanta_intl', 'arrival_delay', true) }}"
+      name: "Arrival Delay Reason:"
+      icon: mdi:airplane-landing
+      state: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'arrival_delay_reason') }}"
+      secondary: "Last Updated {{ as_timestamp(states.sensor.hartsfield_jackson_atlanta_intl.last_changed) | timestamp_custom('%D %-I:%M %p') }}"
+    - type: custom:template-entity-row
+      condition: "{{ is_state_attr('sensor.hartsfield_jackson_atlanta_intl', 'departure_delay', true) }}"
+      name: "Departure Delay Reason:"
+      icon: mdi:airplane-takeoff
+      state: "{{ state_attr('sensor.hartsfield_jackson_atlanta_intl', 'departure_delay_reason') }}"
