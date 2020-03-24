@@ -64,15 +64,23 @@ class FAAStatusSensor(Entity):
         self.exception = None
         self._attr = {
             "departure_delay": False,
+            "departure_delay_min": None,
+            "departure_delay_max": None,
+            "deparutre_delay_trend": None,
             "departure_delay_reason": None,
             "arrival_delay": False,
+            "arrival_delay_min": None,
+            "arrival_delay_max": None,
+            "arrival_delay_trend": None,
             "arrival_delay_reason": None,
             "ground_delay": False,
             "ground_delay_reason": None,
+            "ground_delay_average": None,
             "ground_stop": False,
             "ground_stop_reason": None,
             "end_time": None,
             "closed": False,
+            "closure_begin": None,
             "closure_end": None,
             "closure_reason": None
         }
@@ -98,22 +106,36 @@ class FAAStatusSensor(Entity):
                     _LOGGER.debug("Arr: %s, Dep: %s, GDP: %s, GS: %s, Close: %s", ar, de, gd, gs, cl)
                     if ar is False:
                         self._attr["arrival_delay"] = False
+                        self._attr["arrival_delay_min"] = None
+                        self._attr["arrival_delay_max"] = None
+                        self._attr["arrival_delay_trend"] = None
                         self._attr["arrival_delay_reason"] = None
                     else:
                         self._attr["arrival_delay"] = True
+                        self._attr["arrival_delay_min"] = data["Status"][ar]["MinDelay"]
+                        self._attr["arrival_delay_max"] = data["Status"][ar]["MaxDelay"]
+                        self._attr["arrival_delay_trend"] = data["Status"][ar]["Trend"]
                         self._attr["arrival_delay_reason"] = data["Status"][ar]["Reason"]
                     if de is False:
                         self._attr["departure_delay"] = False
+                        self._attr["departure_delay_min"] = None
+                        self._attr["departure_delay_max"] = None
+                        self._attr["departure_delay_trend"] = None
                         self._attr["departure_delay_reason"] = None
                     else:
                         self._attr["departure_delay"] = True
+                        self._attr["departure_delay_min"] = data["Status"][de]["MinDelay"]
+                        self._attr["departure_delay_max"] = data["Status"][de]["MaxDelay"]
+                        self._attr["departure_delay_trend"] = data["Status"][de]["Trend"]
                         self._attr["departure_delay_reason"] = data["Status"][de]["Reason"]
                     if gd is False:
                         self._attr["ground_delay"] = False
                         self._attr["ground_delay_reason"] = None
+                        self._attr["ground_delay_average"] = None
                     else:
                         self._attr["ground_delay"] = True
                         self._attr["ground_delay_reason"] = data["Status"][gd]["Reason"]
+                        self._attr["ground_delay_average"] = data["Status"][gd]["AvgDelay"]
                     if gs is False:
                         self._attr["ground_stop"] = False
                         self._attr["ground_stop_reason"] = None
@@ -125,10 +147,12 @@ class FAAStatusSensor(Entity):
                     if cl is False:
                         self._attr["closed"] = False
                         self._attr["closure_reason"] = None
+                        self._attr["closure_begin"] = None
                         self._attr["closure_end"] = None
                     else:
                         self._attr["closed"] = True
-                        self._attr["closure_reason"] = data["Status"][ar]["Reason"]
+                        self._attr["closure_reason"] = data["Status"][cl]["Reason"]
+                        self._attr["closure_begin"] = data["Status"][cl]["ClosureBegin"]
                         self._attr["closure_end"] = data["Status"][cl]["ClosureEnd"]
                     self._state = data.get("DelayCount")
 
