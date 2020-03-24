@@ -88,12 +88,14 @@ class FAAStatusSensor(Entity):
                     _LOGGER.critical("FAA Status download failure - HTTP status code %s", response.status)
                 else:
                     data = await response.json()
+                    _LOGGER.debug("Data: %s", data)
 
                     ar = next((i for i, d in enumerate(data["Status"]) if d.get("Type") == "Arrival"), False)
                     de = next((i for i, d in enumerate(data["Status"]) if d.get("Type") == "Departure"), False)
                     gd = next((i for i, d in enumerate(data["Status"]) if d.get("Type") == "Ground Delay"), False)
                     gs = next((i for i, d in enumerate(data["Status"]) if "EndTime" in d), False)
                     cl = next((i for i, d in enumerate(data["Status"]) if "ClosureEnd" in d), False)
+                    _LOGGER.debug("Arr: %s, Dep: %s, GDP: %s, GS: %s, Close: %s", ar, de, gd, gs, cl)
                     if ar is False:
                         self._attr["arrival_delay"] = False
                         self._attr["arrival_delay_reason"] = None
