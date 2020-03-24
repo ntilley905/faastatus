@@ -89,46 +89,45 @@ class FAAStatusSensor(Entity):
                 else:
                     data = await response.json()
 
-                    if data.get("DelayCount") is not 0:
-                        ar = next((i for i, d in enumerate(data["Status"]) if d.get("Type") == "Arrival"), None)
-                        de = next((i for i, d in enumerate(data["Status"]) if d.get("Type") == "Departure"), None)
-                        gd = next((i fir i, d in enumerate(data["Status"]) if d.get("Type") == "Ground Delay"), None)
-                        gs = next((i for i, d in enumerate(data["Status"]) if "EndTime" in d), None)
-                        cl = next((i for i, d in enumerate(data["Status"]) if "ClosureEnd" in d), None)
-                        if ar is False:
-                            self._attr["arrival_delay"] = False
-                            self._attr["arrival_delay_reason"] = None
-                        else:
-                            self._attr["arrival_delay"] = True
-                            self._attr["arrival_delay_reason"] = data["Status"][ar]["Reason"]
-                        if de is False:
-                            self._attr["departure_delay"] = False
-                            self._attr["departure_delay_reason"] = None
-                        else:
-                            self._attr["departure_delay"] = True
-                            self._attr["departure_delay_reason"] = data["Status"][de]["Reason"]
-                        if gd is False:
-                            self._attr["ground_delay"] = False
-                            self._attr["ground_delay_reason"] = None
-                        else:
-                            self._attr["ground_delay"] = True
-                            self._attr["ground_delay_reason"] = data["Status"][gd]["Reason"]
-                        if gs is False:
-                            self._attr["ground_stop"] = False
-                            self._attr["ground_stop_reason"] = None
-                            self._attr["end_time"] = None
-                        else:
-                            self._attr["ground_stop"] = True
-                            self._attr["ground_stop_reason"] = data["Status"][gs]["Reason"]
-                            self._attr["end_time"] = data["Status"][gs]["EndTime"]
-                        if cl is False:
-                            self._attr["closed"] = False
-                            self._attr["closure_reason"] = None
-                            self._attr["closure_end"] = None
-                        else:
-                            self._attr["closed"] = True
-                            self._attr["closure_reason"] = data["Status"][ar]["Reason"]
-                            self._attr["closure_end"] = data["Status"][cl]["ClosureEnd"]
+                    ar = next((i for i, d in enumerate(data["Status"]) if d.get("Type") == "Arrival"), False)
+                    de = next((i for i, d in enumerate(data["Status"]) if d.get("Type") == "Departure"), False)
+                    gd = next((i for i, d in enumerate(data["Status"]) if d.get("Type") == "Ground Delay"), False)
+                    gs = next((i for i, d in enumerate(data["Status"]) if "EndTime" in d), False)
+                    cl = next((i for i, d in enumerate(data["Status"]) if "ClosureEnd" in d), False)
+                    if ar is False:
+                        self._attr["arrival_delay"] = False
+                        self._attr["arrival_delay_reason"] = None
+                    else:
+                        self._attr["arrival_delay"] = True
+                        self._attr["arrival_delay_reason"] = data["Status"][ar]["Reason"]
+                    if de is False:
+                        self._attr["departure_delay"] = False
+                        self._attr["departure_delay_reason"] = None
+                    else:
+                        self._attr["departure_delay"] = True
+                        self._attr["departure_delay_reason"] = data["Status"][de]["Reason"]
+                    if gd is False:
+                        self._attr["ground_delay"] = False
+                        self._attr["ground_delay_reason"] = None
+                    else:
+                        self._attr["ground_delay"] = True
+                        self._attr["ground_delay_reason"] = data["Status"][gd]["Reason"]
+                    if gs is False:
+                        self._attr["ground_stop"] = False
+                        self._attr["ground_stop_reason"] = None
+                        self._attr["end_time"] = None
+                    else:
+                        self._attr["ground_stop"] = True
+                        self._attr["ground_stop_reason"] = data["Status"][gs]["Reason"]
+                        self._attr["end_time"] = data["Status"][gs]["EndTime"]
+                    if cl is False:
+                        self._attr["closed"] = False
+                        self._attr["closure_reason"] = None
+                        self._attr["closure_end"] = None
+                    else:
+                        self._attr["closed"] = True
+                        self._attr["closure_reason"] = data["Status"][ar]["Reason"]
+                        self._attr["closure_end"] = data["Status"][cl]["ClosureEnd"]
                     self._state = data.get("DelayCount")
 
         except Exception:  # pylint: disable=broad-except
