@@ -66,7 +66,7 @@ class FAAStatusSensor(Entity):
             "departure_delay": False,
             "departure_delay_min": None,
             "departure_delay_max": None,
-            "deparutre_delay_trend": None,
+            "departure_delay_trend": None,
             "departure_delay_reason": None,
             "arrival_delay": False,
             "arrival_delay_min": None,
