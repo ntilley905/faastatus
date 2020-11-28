@@ -1,3 +1,10 @@
+{% if installed %}
+{% if version_installed.replace("v", "").replace(".","") | int < 100  %}
+**_Please see the [release notes](https://github.com/ntilley905/faastatus/releases/tag/v1.0.0) before updating to v1.0.0! Major breaking changes!_**
+{% endif %}
+---
+{% endif %}
+
 **Configuration**
 
 As of v1.0.0 this component is configurable via the user interface. To configure, go to the integrations page, click the orange button, then search for FAA Delays. On the setup page, enter in any supported aiprort's IATA code (see below). 
