@@ -1,3 +1,6 @@
+# Deprecated
+As of 3/3/21, there is now a core component inside Home Assistant that retrieves all of this data. I suggest everyone use that from now on! There will be no more updates to this custom component.
+
 # custom_component to get info from FAA Airspace API
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
